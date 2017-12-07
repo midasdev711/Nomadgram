@@ -1,6 +1,27 @@
 export const translations = {
-  ko: {
-    "Login in": "로그인",
-    "About Us": "회사소개"
-  }
-};
+  'ko': {
+    'Username': '유저네임',
+    'Password': '비밀번호',
+    'Log In': '로그인',
+    'or': '또는',
+    'Log in with Facebook': '페이스북으로 로그인',
+    'Forgot password?': '비밀번호 찾기',
+    'Sign up to see photos and videos from your friends.': '가입하여 친구들의 사진과 비디오를 감상하세요.',
+    'Email': '이메일',
+    'Full Name': '전체 이름',
+    'By Signing up, you agree to our': '사인업을 할때에 동의합니다',
+    'Terms & Privacy Policy': '사생활 보호법',
+    'About Us': '회사소개',
+    'Support': '지원',
+    'Blog': '블로그',
+    'Press': '뉴스',
+    'API': '',
+    'Jobs': '구인',
+    'Privacy': '',
+    'Terms': '',
+    'Directory': '',
+    'Language': '언어',
+  },
+  'options': {
+  },
+}
