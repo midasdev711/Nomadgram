@@ -1,0 +1,40 @@
+.container {
+  .spinner {
+    width: 44px;
+    height: 44px;
+    border: 8px solid $dark-blue;
+    margin: 200px auto;
+    border-radius: 30px 0 0 0;
+    animation: spinner 1.5s infinite;
+    -webkit-animation: spinner 1.5s infinite;
+    transition: border-radius;
+    position: relative;
+    &:after {
+      content: "Loading";
+      color: $dark-blue;
+      position: absolute;
+      bottom: -34px;
+      left: -8px;
+      width: 60px;
+      text-align: center;
+      font-size: 18px;
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-weight: 100;
+    }
+  }
+}
+
+@keyframes spinner {
+  0% {
+    border-radius: 30px 0 0 0;
+  }
+  25% {
+    border-radius: 0 30px 0 0;
+  }
+  50% {
+    border-radius: 0 0 30px 0;
+  }
+  75% {
+    border-radius: 0 0 0 30px;
+  }
+}
