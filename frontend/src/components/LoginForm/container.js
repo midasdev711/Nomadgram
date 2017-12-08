@@ -9,7 +9,8 @@ class Container extends Component {
   };
 
   static propTypes = {
-    facebookLogin: PropTypes.func.isRequired
+    facebookLogin: PropTypes.func.isRequired,
+    usernameLogin: PropTypes.func.isRequired
   };
 
   _handleInputChange = e => {
@@ -21,7 +22,9 @@ class Container extends Component {
 
   _handleSubmit = e => {
     e.preventDefault();
-    console.log(this.state);
+    const { usernameLogin } = this.props;
+    const { username, password } = this.state;
+    usernameLogin(username, password);
   };
 
   _handleFacebookLogin = response => {
