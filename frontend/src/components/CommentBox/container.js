@@ -1,6 +1,10 @@
-import React from "react";
+import React, { Component } from "react";
 import CommentBox from "./presenter";
 
-const Container = props => <CommentBox {...props} />;
+class Container extends Component {
+  render() {
+    return <CommentBox />;
+  }
+}
 
 export default Container;
