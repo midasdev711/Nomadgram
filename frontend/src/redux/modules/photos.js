@@ -80,7 +80,7 @@ function likePhoto(photoId) {
   };
 }
 
-async function unlikePhoto(photoId) {
+function unlikePhoto(photoId) {
   return (dispatch, getState) => {
     dispatch(doUnLikePhoto(photoId));
     const { user: { token } } = getState();
@@ -99,7 +99,7 @@ async function unlikePhoto(photoId) {
   };
 }
 
-async function commentPhoto(photoId, message) {
+function commentPhoto(photoId, message) {
   return (dispatch, getState) => {
     const { user: { token } } = getState();
     fetch(`/images/${photoId}/comments/`, {
