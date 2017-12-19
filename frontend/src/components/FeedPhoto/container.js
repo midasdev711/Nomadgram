@@ -6,7 +6,14 @@ class Container extends Component {
     seeingLikes: false
   };
   render() {
-    return <FeedPhoto {...this.props} {...this.state} />;
+    return (
+      <FeedPhoto
+        {...this.props}
+        {...this.state}
+        openLikes={this._openLikes}
+        closeLikes={this._closeLikes}
+      />
+    );
   }
 
   _openLikes = () => {
