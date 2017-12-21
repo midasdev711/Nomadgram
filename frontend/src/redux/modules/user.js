@@ -8,6 +8,8 @@ const SET_USER_LIST = "SET_USER_LIST";
 const FOLLOW_USER = "FOLLOW_USER";
 const UNFOLLOW_USER = "UNFOLLOW_USER";
 const SET_IMAGE_LIST = "SET_IMAGE_LIST";
+const GET_PROFILE = "GET_PROFILE";
+const GET_NOTIFICATIONS = "GET_NOTIFICATIONS";
 
 // action creators
 
@@ -49,6 +51,20 @@ function setImageList(imageList) {
   return {
     type: SET_IMAGE_LIST,
     imageList
+  };
+}
+
+function setProfile(profile) {
+  return {
+    type: GET_PROFILE,
+    profile
+  };
+}
+
+function setNotifications(notifications) {
+  return {
+    type: GET_NOTIFICATIONS,
+    notifications
   };
 }
 
@@ -239,6 +255,44 @@ function searchImages(token, searchTerm) {
     .then(json => json);
 }
 
+function getProfile(username) {
+  return (dispatch, getState) => {
+    const { user: { token } } = getState();
+    fetch(`/users/${username}/`, {
+      method: "GET",
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(logout());
+        }
+        return response.json();
+      })
+      .then(json => dispatch(setProfile(json)));
+  };
+}
+
+function getNotifications() {
+  return (dispatch, getState) => {
+    const { user: { token } } = getState();
+    fetch(`/notifications/`, {
+      method: "GET",
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(logout());
+        }
+        return response.json();
+      })
+      .then(json => dispatch(setNotifications(json)));
+  };
+}
+
 // initial state
 
 const initialState = {
@@ -262,6 +316,10 @@ function reducer(state = initialState, action) {
       return applyUnfollowUser(state, action);
     case SET_IMAGE_LIST:
       return applySetImageList(state, action);
+    case GET_PROFILE:
+      return applaySetProfile(state, action);
+    case GET_NOTIFICATIONS:
+      return applyGetNotifications(state, action);
     default:
       return state;
   }
@@ -325,6 +383,22 @@ function applySetImageList(state, action) {
   };
 }
 
+function applaySetProfile(state, action) {
+  const { profile } = action;
+  return {
+    ...state,
+    profile
+  };
+}
+
+function applyGetNotifications(state, action) {
+  const { notifications } = action;
+  return {
+    ...state,
+    notifications
+  };
+}
+
 // exports
 
 const actionCreators = {
@@ -338,7 +412,9 @@ const actionCreators = {
   getExplore,
   setImageList,
   setUserList,
-  searchByTerm
+  searchByTerm,
+  getProfile,
+  getNotifications
 };
 
 export { actionCreators };

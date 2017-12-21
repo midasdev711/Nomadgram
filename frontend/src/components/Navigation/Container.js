@@ -17,6 +17,7 @@ class Container extends Component {
         value={this.state.term}
         onSubmit={this._onSubmit}
         onInputChange={this._onInputChange}
+        profile={this.props.profile}
       />
     );
   }
