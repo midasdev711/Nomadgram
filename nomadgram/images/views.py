@@ -65,7 +65,8 @@ class LikeImage(APIView):
 
         users = user_models.User.objects.filter(id__in=like_creators_ids)
 
-        serializer = user_serializers.ListUserSerializer(users, many=True, context={"request": request})
+        serializer = user_serializers.ListUserSerializer(
+            users, many=True, context={"request": request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -183,7 +184,9 @@ class Search(APIView):
 
         else:
 
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            images = models.Images.objects.all()[:20]
+            serializer = serializers.CommentSerializer(images, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class ModerateComments(APIView):
