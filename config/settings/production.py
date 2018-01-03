@@ -10,7 +10,6 @@ Production settings for Nomadgram project.
 """
 
 
-
 from .base import *  # noqa
 
 # SECRET CONFIGURATION
@@ -82,8 +81,14 @@ AWS_HEADERS = {
 
 #  See:http://stackoverflow.com/questions/10390244/
 from storages.backends.s3boto3 import S3Boto3Storage
-StaticRootS3BotoStorage = lambda: S3Boto3Storage(location='static')  # noqa
-MediaRootS3BotoStorage = lambda: S3Boto3Storage(location='media')  # noqa
+
+
+def StaticRootS3BotoStorage(): return S3Boto3Storage(location='static')  # noqa
+
+
+def MediaRootS3BotoStorage(): return S3Boto3Storage(location='media')  # noqa
+
+
 DEFAULT_FILE_STORAGE = 'config.settings.production.MediaRootS3BotoStorage'
 
 MEDIA_URL = 'https://s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
@@ -103,7 +108,8 @@ INSTALLED_APPS = ['collectfast', ] + INSTALLED_APPS
 # ------------------------------------------------------------------------------
 DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
                          default='Nomadgram <noreply@example.com>')
-EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[Nomadgram]')
+EMAIL_SUBJECT_PREFIX = env(
+    'DJANGO_EMAIL_SUBJECT_PREFIX', default='[Nomadgram]')
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 # Anymail with Mailgun
@@ -133,7 +139,8 @@ DATABASES['default'] = env.db('DATABASE_URL')
 # CACHING
 # ------------------------------------------------------------------------------
 
-REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
+REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL',
+                                      default='redis://127.0.0.1:6379'), 0)
 # Heroku URL does not pass the DB number, so we parse it in
 CACHES = {
     'default': {
