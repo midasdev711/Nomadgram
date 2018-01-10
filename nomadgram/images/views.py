@@ -179,13 +179,16 @@ class Search(APIView):
             images = models.Image.objects.filter(
                 tags__name__in=hashtags).distinct()
 
-            serializer = serializers.CountImageSerializer(images, many=True)
+            serializer = serializers.ImageSerializer(
+                images, many=True, context={'request': request})
+
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
         else:
 
-            images = models.Images.objects.all()[:20]
-            serializer = serializers.CommentSerializer(images, many=True)
+            images = models.Image.objects.all()[:20]
+            serializer = serializers.ImageSerializer(
+                images, many=True, context={'request': request})
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
