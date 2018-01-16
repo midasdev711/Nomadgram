@@ -4,6 +4,7 @@ from nomadgram.users import models as user_models
 from nomadgram.images import models as image_models
 
 
+@python_2_unicode_compatible
 class Notification(image_models.TimeStampedModel):
 
     TYPE_CHOICES = (
