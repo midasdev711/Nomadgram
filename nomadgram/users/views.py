@@ -1,11 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from . import models, serializers
+from nomadgram.notifications import views as notification_views
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
-from nomadgram.notifications import views as notification_views
-
-from . import models, serializers
 
 
 class ExploreUsers(APIView):
@@ -14,7 +13,8 @@ class ExploreUsers(APIView):
 
         last_five = models.User.objects.all().order_by('-date_joined')[:5]
 
-        serializer = serializers.ListUserSerializer(last_five, many=True, context={'request': request})
+        serializer = serializers.ListUserSerializer(
+            last_five, many=True, context={"request": request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -34,8 +34,7 @@ class FollowUser(APIView):
 
         user.save()
 
-        notification_views.create_notification(
-            user, user_to_follow, 'follow')
+        notification_views.create_notification(user, user_to_follow, 'follow')
 
         return Response(status=status.HTTP_200_OK)
 
@@ -76,7 +75,8 @@ class UserProfile(APIView):
 
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = serializers.UserProfileSerializer(found_user)
+        serializer = serializers.UserProfileSerializer(
+            found_user, context={'request': request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -110,7 +110,7 @@ class UserProfile(APIView):
                 return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserFollowUsers(APIView):
+class UserFollowers(APIView):
 
     def get(self, request, username, format=None):
 
@@ -122,7 +122,7 @@ class UserFollowUsers(APIView):
         user_followers = found_user.followers.all()
 
         serializer = serializers.ListUserSerializer(
-            user_followers, many=True, context={'request': request})
+            user_followers, many=True, context={"request": request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -138,7 +138,8 @@ class UserFollowing(APIView):
 
         user_following = found_user.following.all()
 
-        serializer = serializers.ListUserSerializer(user_following, many=True, context={'request': request})
+        serializer = serializers.ListUserSerializer(
+            user_following, many=True, context={"request": request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -151,9 +152,10 @@ class Search(APIView):
 
         if username is not None:
 
-            users = models.User.objects.filter(username__icontains=username)
+            users = models.User.objects.filter(username__istartswith=username)
 
-            serializer = serializers.ListUserSerializer(users, many=True, context={'request': request})
+            serializer = serializers.ListUserSerializer(
+                users, many=True, context={"request": request})
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -187,13 +189,21 @@ class ChangePassword(APIView):
                         user.save()
 
                         return Response(status=status.HTTP_200_OK)
+
                     else:
+
                         return Response(status=status.HTTP_400_BAD_REQUEST)
+
                 else:
+
                     return Response(status=status.HTTP_400_BAD_REQUEST)
+
             else:
+
                 return Response(status=status.HTTP_400_BAD_REQUEST)
+
         else:
+
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
