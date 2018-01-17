@@ -23,4 +23,4 @@ class Notification(image_models.TimeStampedModel):
         ordering = ['-created_at']
 
     def __str__(self):
-        return 'from: {} - to:{}'.format(self.creator, self.to)
+        return 'From: {} - To: {}'.format(self.creator, self.to)
