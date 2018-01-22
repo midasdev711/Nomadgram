@@ -23,8 +23,8 @@ class CountImageSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'file',
-            'like_count',
-            'comment_count'
+            'comment_count',
+            'like_count'
         )
 
 
@@ -33,8 +33,14 @@ class FeedUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = user_models.User
         fields = (
+            'profile_image',
             'username',
-            'profile_image'
+            'name',
+            'bio',
+            'website',
+            'post_count',
+            'followers_count',
+            'following_count',
         )
 
 
@@ -93,7 +99,18 @@ class ImageSerializer(TaggitSerializer, serializers.ModelSerializer):
         return False
 
 
+class LikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Like
+        fields = (
+            'creator',
+        )
+
+
 class InputImageSerializer(serializers.ModelSerializer):
+
+    tags = TagListSerializerField()
 
     class Meta:
         model = models.Image
@@ -101,4 +118,5 @@ class InputImageSerializer(serializers.ModelSerializer):
             'file',
             'location',
             'caption',
+            'tags'
         )

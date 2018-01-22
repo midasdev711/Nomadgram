@@ -1,11 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from . import models, serializers
 from nomadgram.users import models as user_models
 from nomadgram.users import serializers as user_serializers
 from nomadgram.notifications import views as notification_views
-
-from . import models, serializers
 
 
 class Images(APIView):
@@ -20,13 +19,13 @@ class Images(APIView):
 
         for following_user in following_users:
 
-            user_images = following_user.images.all()
+            user_images = following_user.images.all()[:2]
 
             for image in user_images:
 
                 image_list.append(image)
 
-        my_images = user.images.all()
+        my_images = user.images.all()[:2]
 
         for image in my_images:
 
@@ -51,7 +50,9 @@ class Images(APIView):
             serializer.save(creator=user)
 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
         else:
+            print(serializer.errors)
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -66,7 +67,7 @@ class LikeImage(APIView):
         users = user_models.User.objects.filter(id__in=like_creators_ids)
 
         serializer = user_serializers.ListUserSerializer(
-            users, many=True, context={"request": request})
+            users, many=True, context={'request': request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -80,13 +81,14 @@ class LikeImage(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            preexisting_like = models.Like.objects.get(
+            preexisiting_like = models.Like.objects.get(
                 creator=user,
                 image=found_image
             )
             return Response(status=status.HTTP_304_NOT_MODIFIED)
 
         except models.Like.DoesNotExist:
+
             new_like = models.Like.objects.create(
                 creator=user,
                 image=found_image
@@ -107,17 +109,11 @@ class UnLikeImage(APIView):
         user = request.user
 
         try:
-            found_image = models.Image.objects.get(id=image_id)
-        except models.Image.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            preexisting_like = models.Like.objects.get(
+            preexisiting_like = models.Like.objects.get(
                 creator=user,
-                image=found_image
+                image__id=image_id
             )
-
-            preexisting_like.delete()
+            preexisiting_like.delete()
 
             return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -149,6 +145,7 @@ class CommentOnImage(APIView):
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
         else:
+
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -238,6 +235,7 @@ class ImageDetail(APIView):
         image = self.find_own_image(image_id, user)
 
         if image is None:
+
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = serializers.InputImageSerializer(
